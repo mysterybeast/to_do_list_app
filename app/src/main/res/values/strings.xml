@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">To do list</string>
+    <string name="button_create">+</string>
+    <string name="button_cancel">x</string>
+    <string name="empty_list">Ваш список задач пуст.</string>
+    <string name="editText_hint_header">Введите вашу задачу</string>
+    <string name="editText_hint_description">Введите описание</string>
+    <string name="button_change">изменить</string>
+    <string name="button_delete">удалить</string>
+</resources>

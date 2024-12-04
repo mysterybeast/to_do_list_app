@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/task"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+
+    android:layout_marginTop="10dp"
+    android:background="@color/background_activity">
+
+    <LinearLayout
+        android:id="@+id/taskLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@drawable/shape_rounded_list_item" >
+
+        <LinearLayout
+            android:id="@+id/headerLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingVertical="10dp"
+                tools:text="Домашние дела"
+                android:textColor="@color/green"
+                android:textSize="20sp"
+                android:ellipsize="end"
+                android:singleLine="true"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Помыть посуду, поменять шторы, пропылесосить, сходить за продуктами и приготовить ужин"
+            android:textSize="16sp"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+</RelativeLayout>
