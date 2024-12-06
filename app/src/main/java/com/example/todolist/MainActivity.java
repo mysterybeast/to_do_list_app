@@ -22,12 +22,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<Task> tasks = new ArrayList<Task>();
+    ArrayList<Task> tasks = new ArrayList<>();
     TaskAdapter taskAdapter;
     RecyclerView taskList;
     DataBaseHandler dataBaseHandler;
-    @SuppressLint("StaticFieldLeak")
-    static Button createTaskButton;
+    Button createTaskButton;
     View emptyListLayout;
 
     @Override

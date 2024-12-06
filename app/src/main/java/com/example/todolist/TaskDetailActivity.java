@@ -18,8 +18,7 @@ import com.example.todolist.Model.Task;
 
 public class TaskDetailActivity extends AppCompatActivity {
 
-    @SuppressLint("StaticFieldLeak")
-    static TextView header, description;
+    TextView header, description;
     DataBaseHandler dataBaseHandler;
     Task task;
     int id;

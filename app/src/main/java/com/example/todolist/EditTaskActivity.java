@@ -17,8 +17,7 @@ import com.example.todolist.Model.Task;
 
 public class EditTaskActivity extends AppCompatActivity {
 
-    @SuppressLint("StaticFieldLeak")
-    static EditText header, description;
+    EditText header, description;
     DataBaseHandler dataBaseHandler;
     Task task;
     int id;
@@ -83,6 +82,4 @@ public class EditTaskActivity extends AppCompatActivity {
         return !(header.getText().toString().equals(task.getHeader())) |
                 !(description.getText().toString().equals(task.getDescription()));
     }
-
-
 }
