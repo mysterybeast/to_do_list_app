@@ -103,6 +103,5 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         db.delete(TABLE_NAME, KEY_ID + "=?", new String[]{String.valueOf(task.getId())});
         db.close();
-
     }
 }

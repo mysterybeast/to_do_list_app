@@ -22,7 +22,6 @@ public class Task {
         //this.isChecked = false;
     }
 
-
     public String getHeader() {
         return this.header;
     }

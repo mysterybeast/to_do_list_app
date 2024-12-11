@@ -16,7 +16,7 @@
             android:name=".TaskDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".EditTaskActivity"
+            android:name=".EditTaskFragment"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
