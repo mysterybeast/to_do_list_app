@@ -18,60 +18,56 @@ import java.util.ArrayList;
 
 public class TaskListFragment extends Fragment {
 
-    private ArrayList<Task> mTasks = new ArrayList<>();
-    private TaskAdapter mTaskAdapter;
-    private RecyclerView mTaskList;
-    private DataBaseHandler mDataBaseHandler;
-    private Button mCreateTaskButton;
-    private View mEmptyListLayout;
+    private ArrayList<Task> tasks = new ArrayList<>();
+    private TaskAdapter taskAdapter;
+    private RecyclerView taskList;
+    private DataBaseHandler dataBaseHandler;
+    private Button createTaskButton;
+    private View emptyListLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
-        mDataBaseHandler = new DataBaseHandler(getActivity());
+        dataBaseHandler = new DataBaseHandler(getActivity());
 
-        mTaskList = view.findViewById(R.id.taskList);
-        mEmptyListLayout = view.findViewById(R.id.emptyListLayout);
-        mCreateTaskButton = view.findViewById(R.id.createTaskButton);
-
-        TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
-        EditTaskFragment editTaskFragment = new EditTaskFragment();
+        taskList = view.findViewById(R.id.taskList);
+        emptyListLayout = view.findViewById(R.id.emptyListLayout);
+        createTaskButton = view.findViewById(R.id.createTaskButton);
 
         TaskAdapter.OnTaskClickListener taskClickListener = (task, position) -> {
-
-            int idToPut = mTasks.get(position).getId();
+            int idToPut = tasks.get(position).getId();
             Bundle bundle = new Bundle();
             bundle.putInt("id", idToPut);
-            taskDetailFragment.setArguments(bundle);
 
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, taskDetailFragment)
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in, R.anim.fade_out,
+                            R.anim.fade_in, R.anim.slide_out)
+                    .replace(R.id.fragment_container, TaskDetailFragment.class, bundle)
+                    .setReorderingAllowed(true)
                     .addToBackStack(null)
                     .commit();
         };
 
-        mCreateTaskButton.setOnClickListener(v -> getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, editTaskFragment)
+        createTaskButton.setOnClickListener(v -> getParentFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in, R.anim.fade_out,
+                        R.anim.fade_in, R.anim.slide_out)
+                .replace(R.id.fragment_container, EditTaskFragment.class, null)
+                .setReorderingAllowed(true)
                 .addToBackStack(null)
                 .commit());
 
         setIntialData();
-        mTaskAdapter = new TaskAdapter(getActivity(), mTasks, taskClickListener);
-        mTaskList.setAdapter(mTaskAdapter);
+        taskAdapter = new TaskAdapter(getActivity(), tasks, taskClickListener);
+        taskList.setAdapter(taskAdapter);
         return view;
     }
 
     private void setIntialData() {
-//        dataBaseHandler.addTask(new Task("Почитать книгу", "на свежем воздухе, желательно, лёжа в гамаке"));
-//        dataBaseHandler.addTask(new Task("Сделать заготовки на зиму своими руками", "лечо, грибочки, огурцы, помидорки, варенье, кабачковая икра и т. п."));
-//        dataBaseHandler.addTask(new Task("Запись в поликлинику", "28 декабря"));
+        tasks = dataBaseHandler.getAllTasks();
 
-        mTasks = mDataBaseHandler.getAllTasks();
-
-        if (mTasks.isEmpty()) mEmptyListLayout.setVisibility(View.VISIBLE);
-        else mEmptyListLayout.setVisibility(View.GONE);
+        if (tasks.isEmpty()) emptyListLayout.setVisibility(View.VISIBLE);
+        else emptyListLayout.setVisibility(View.GONE);
     }
 }

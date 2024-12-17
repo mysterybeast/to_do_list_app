@@ -16,71 +16,54 @@ import com.example.todolist.Model.Task;
 
 public class TaskDetailFragment extends Fragment {
 
-    private TextView mHeader, mDescription;
-    private Button mChangeTaskButton, mDeleteTaskButton;
-    private ImageButton mBackImageButton;
-    private DataBaseHandler mDataBaseHandler;
-    private Task mTask;
-    private int mTaskId;
+    private TextView header, description;
+    private Button changeTaskButton, deleteTaskButton;
+    private ImageButton backImageButton;
+    private DataBaseHandler dataBaseHandler;
+    private int taskId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_detail, container, false);
 
-        mDataBaseHandler = new DataBaseHandler(getActivity());
+        dataBaseHandler = new DataBaseHandler(getActivity());
 
-        mHeader = view.findViewById(R.id.header);
-        mDescription = view.findViewById(R.id.description);
-        mChangeTaskButton = view.findViewById(R.id.changeTaskButton);
-        mDeleteTaskButton = view.findViewById(R.id.deleteTaskButton);
-        mBackImageButton = view.findViewById(R.id.backImageButton);
+        header = view.findViewById(R.id.header);
+        description = view.findViewById(R.id.description);
+        changeTaskButton = view.findViewById(R.id.changeTaskButton);
+        deleteTaskButton = view.findViewById(R.id.deleteTaskButton);
+        backImageButton = view.findViewById(R.id.backImageButton);
 
-        mHeader.setEllipsize(null);
-        mHeader.setSingleLine(false);
-        mDescription.setEllipsize(null);
-        mDescription.setMaxLines(20);
+        header.setEllipsize(null);
+        header.setSingleLine(false);
+        description.setEllipsize(null);
+        description.setMaxLines(20);
 
-        TaskListFragment taskListFragment = new TaskListFragment();
-        EditTaskFragment editTaskFragment = new EditTaskFragment();
+        taskId = requireArguments().getInt("id");
+        Task task = dataBaseHandler.getTask(taskId);
+        header.setText(task.getHeader());
+        description.setText(task.getDescription());
 
-        mChangeTaskButton.setOnClickListener(v -> {
+        changeTaskButton.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putInt("id", mTaskId);
-            editTaskFragment.setArguments(bundle);
+            bundle.putInt("id", taskId);
 
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, editTaskFragment)
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in, R.anim.fade_out,
+                            R.anim.fade_in, R.anim.slide_out)
+                    .replace(R.id.fragment_container, EditTaskFragment.class, bundle)
+                    .setReorderingAllowed(true)
                     .addToBackStack(null)
                     .commit();
         });
 
-        mDeleteTaskButton.setOnClickListener(v -> {
-            mDataBaseHandler.deleteTask(mTask);
-
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, taskListFragment)
-                    .addToBackStack(null)
-                    .commit();
+        deleteTaskButton.setOnClickListener(v -> {
+            dataBaseHandler.deleteTask(task);
+            getParentFragmentManager().popBackStack();
         });
 
-        mBackImageButton.setOnClickListener(v -> getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, taskListFragment)
-                .addToBackStack(null)
-                .commit());
-
-        Bundle bundle = getArguments();
-
-        if (bundle != null) {
-            mTask = new Task();
-            mTaskId = bundle.getInt("id");
-            mTask = mDataBaseHandler.getTask(mTaskId);
-
-            mHeader.setText(mTask.getHeader());
-            mDescription.setText(mTask.getDescription());
-        }
-
+        backImageButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         return view;
     }
 }
