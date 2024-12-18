@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/task"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-
     android:layout_marginTop="10dp"
-    android:background="@color/background_activity">
+    android:background="@color/background_activity"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/taskLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/shape_rounded_list_item"
         android:minHeight="100dp"
         android:orientation="vertical"
-        android:padding="10dp"
-        android:background="@drawable/shape_rounded_list_item" >
+        android:padding="10dp">
 
         <LinearLayout
             android:id="@+id/headerLinearLayout"
@@ -35,12 +33,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:ellipsize="end"
                 android:paddingVertical="10dp"
-                tools:text="Домашние дела"
+                android:singleLine="true"
                 android:textColor="@color/green"
                 android:textSize="20sp"
-                android:ellipsize="end"
-                android:singleLine="true"/>
+                tools:text="Домашние дела" />
 
         </LinearLayout>
 
@@ -53,11 +51,11 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Помыть посуду, поменять шторы, пропылесосить, сходить за продуктами и приготовить ужин"
-            android:textSize="16sp"
+            android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:maxLines="4"
-            android:layout_marginTop="10dp" />
+            android:textSize="16sp"
+            tools:text="Помыть посуду, поменять шторы, пропылесосить, сходить за продуктами и приготовить ужин" />
 
     </LinearLayout>
 </RelativeLayout>
