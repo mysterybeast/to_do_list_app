@@ -42,11 +42,11 @@ public class EditTaskFragment extends Fragment {
         }
 
         backImageButton.setOnClickListener(v -> {
-            if (taskId > 0 && isFieldsChanged() & isFieldsNotEmpty()) {
+            if (taskId > 0 && isFieldsChanged() && isFieldsNotEmpty()) {
                 task = new Task(taskId, header.getText().toString(),
                         description.getText().toString());
                 dataBaseHandler.updateTask(task);
-            } else if (taskId == 0 & isFieldsNotEmpty()) {
+            } else if (taskId == 0 && isFieldsNotEmpty()) {
                 task = new Task(header.getText().toString(),
                         description.getText().toString());
                 dataBaseHandler.addTask(task);
