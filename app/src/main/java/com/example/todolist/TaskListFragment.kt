@@ -27,6 +27,8 @@ class TaskListFragment : Fragment() {
 
         dataBaseHandler = DataBaseHandler(requireActivity())
 
+       // TODO("Add binding")
+
         taskList = view.findViewById(R.id.taskList)
         emptyListLayout = view.findViewById(R.id.emptyListLayout)
         createTaskButton = view.findViewById(R.id.createTaskButton)
