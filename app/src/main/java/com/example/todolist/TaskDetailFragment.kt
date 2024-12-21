@@ -4,49 +4,43 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.todolist.Data.DataBaseHandler
-import com.example.todolist.Model.Task
+import com.example.todolist.databinding.FragmentTaskDetailBinding
 
 
 class TaskDetailFragment : Fragment() {
 
-    private var header: TextView? = null
-    private var description: TextView? = null
-    private var changeTaskButton: Button? = null
-    private var deleteTaskButton: Button? = null
-    private var backImageButton: ImageButton? = null
-    private var dataBaseHandler: DataBaseHandler? = null
-    private var taskId = 0
+    private var _binding: FragmentTaskDetailBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_task_detail, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentTaskDetailBinding.inflate(inflater)
+        return binding.root
+    }
 
-        dataBaseHandler = DataBaseHandler(requireActivity())
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val dataBaseHandler = DataBaseHandler(requireActivity())
 
-        header = view.findViewById(R.id.header)
-        description = view.findViewById(R.id.description)
-        changeTaskButton = view.findViewById(R.id.changeTaskButton)
-        deleteTaskButton = view.findViewById(R.id.deleteTaskButton)
-        backImageButton = view.findViewById(R.id.backImageButton)
+        val header = binding.taskLT.header
+        val description = binding.taskLT.description
+        val changeTaskButton = binding.changeTaskButton
+        val deleteTaskButton = binding.deleteTaskButton
+        val backImageButton = binding.backImageButton
 
-        header!!.ellipsize = null
-        header!!.isSingleLine = false
-        description!!.ellipsize = null
-        description!!.maxLines = 20
+        header.ellipsize = null
+        header.isSingleLine = false
+        description.ellipsize = null
+        description.maxLines = 20
 
-        taskId = requireArguments().getInt("id")
-        val task: Task = dataBaseHandler!!.getTask(taskId)
-        header!!.text = task.header
-        description!!.text = task.description
+        val taskId = requireArguments().getInt("id")
+        val task = dataBaseHandler.getTask(taskId)
+        header.text = task.header
+        description.text = task.description
 
-        changeTaskButton!!.setOnClickListener {
+        changeTaskButton.setOnClickListener {
             val bundle = Bundle()
             bundle.putInt("id", taskId)
 
@@ -61,12 +55,11 @@ class TaskDetailFragment : Fragment() {
                 .commit()
         }
 
-        deleteTaskButton!!.setOnClickListener {
-            dataBaseHandler!!.deleteTask(task)
+        deleteTaskButton.setOnClickListener {
+            dataBaseHandler.deleteTask(task)
             parentFragmentManager.popBackStack()
         }
 
-        backImageButton!!.setOnClickListener { parentFragmentManager.popBackStack() }
-        return view
+        backImageButton.setOnClickListener { parentFragmentManager.popBackStack() }
     }
 }

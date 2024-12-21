@@ -37,6 +37,7 @@
         </LinearLayout>
 
         <include
+            android:id="@+id/taskListLayout"
             layout="@layout/task_list_layout"
             tools:visibility="invisible" />
     </RelativeLayout>

@@ -4,40 +4,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.Data.DataBaseHandler
 import com.example.todolist.Model.Task
+import com.example.todolist.databinding.FragmentTaskListBinding
 
 
 class TaskListFragment : Fragment() {
 
+    private var _binding: FragmentTaskListBinding? = null
+    private val binding get() = _binding!!
     private var tasks = ArrayList<Task>()
-    private var taskList: RecyclerView? = null
-    private var dataBaseHandler: DataBaseHandler? = null
-    private var createTaskButton: Button? = null
-    private var emptyListLayout: View? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_task_list, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentTaskListBinding.inflate(inflater)
+        return binding.root
+    }
 
-        dataBaseHandler = DataBaseHandler(requireActivity())
-
-       // TODO("Add binding")
-
-        taskList = view.findViewById(R.id.taskList)
-        emptyListLayout = view.findViewById(R.id.emptyListLayout)
-        createTaskButton = view.findViewById(R.id.createTaskButton)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val taskList = binding.taskListLayout.taskList
+        val createTaskButton = binding.createTaskButton
 
         setIntialData()
 
         val taskAdapter = TaskAdapter(tasks, onTaskClick = { task: Task -> openTask(task) })
 
-        createTaskButton!!.setOnClickListener {
+        createTaskButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
                     R.anim.slide_in, R.anim.fade_out,
@@ -49,15 +43,13 @@ class TaskListFragment : Fragment() {
                 .commit()
         }
 
-        taskList!!.adapter = taskAdapter
-        return view
+        taskList.adapter = taskAdapter
     }
 
     private fun setIntialData() {
-        tasks = dataBaseHandler!!.getAllTasks()
-
-        if (tasks.isEmpty()) emptyListLayout!!.visibility = View.VISIBLE
-        else emptyListLayout!!.visibility = View.GONE
+        val dataBaseHandler = DataBaseHandler(requireActivity())
+        tasks = dataBaseHandler.getAllTasks()
+        binding.emptyListLayout.visibility = if (tasks.isEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun openTask(task: Task) {

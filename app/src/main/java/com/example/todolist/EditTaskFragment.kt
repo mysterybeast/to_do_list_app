@@ -9,30 +9,31 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import com.example.todolist.Data.DataBaseHandler
 import com.example.todolist.Model.Task
+import com.example.todolist.databinding.FragmentEditTaskBinding
 
 class EditTaskFragment : Fragment() {
 
+    private var _binding: FragmentEditTaskBinding? = null
+    private val binding get() = _binding!!
     private var header: EditText? = null
     private var description: EditText? = null
-    private var backImageButton: ImageButton? = null
     private var task: Task? = null
-    private var taskId = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_edit_task, container, false)
+    ): View {
+        _binding = FragmentEditTaskBinding.inflate(inflater)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        header = binding.editTaskLT.header
+        description = binding.editTaskLT.description
+        val backImageButton = binding.backImageButton
         val dataBaseHandler = DataBaseHandler(requireActivity())
-
-        header = view.findViewById(R.id.header)
-        description = view.findViewById(R.id.description)
-        backImageButton = view.findViewById(R.id.backImageButton)
-
-        val bundle = arguments
-        bundle?.let { taskId = it.getInt("id") }
+        val taskId = arguments?.getInt("id") ?: 0
 
         if (taskId > 0) {
             task = dataBaseHandler.getTask(taskId)
@@ -40,7 +41,7 @@ class EditTaskFragment : Fragment() {
             description!!.setText(task!!.description)
         }
 
-        backImageButton!!.setOnClickListener {
+        backImageButton.setOnClickListener {
             if (taskId > 0 && isFieldsChanged() && isFieldsNotEmpty()) {
                 task = Task(
                     taskId, header!!.text.toString(),
@@ -56,7 +57,6 @@ class EditTaskFragment : Fragment() {
             }
             parentFragmentManager.popBackStack()
         }
-        return view
     }
 
     private fun isFieldsNotEmpty(): Boolean {
@@ -69,14 +69,3 @@ class EditTaskFragment : Fragment() {
                 (description!!.text.toString() != task!!.description)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
