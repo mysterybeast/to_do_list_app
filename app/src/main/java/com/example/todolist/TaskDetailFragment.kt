@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.example.todolist.Data.DataBaseHandler
 import com.example.todolist.databinding.FragmentTaskDetailBinding
@@ -23,26 +24,23 @@ class TaskDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val dataBaseHandler = DataBaseHandler(requireActivity())
-
-        val header = binding.taskLT.header
-        val description = binding.taskLT.description
-        val changeTaskButton = binding.changeTaskButton
-        val deleteTaskButton = binding.deleteTaskButton
-        val backImageButton = binding.backImageButton
-
-        header.ellipsize = null
-        header.isSingleLine = false
-        description.ellipsize = null
-        description.maxLines = 20
-
         val taskId = requireArguments().getInt("id")
         val task = dataBaseHandler.getTask(taskId)
-        header.text = task.header
-        description.text = task.description
 
-        changeTaskButton.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putInt("id", taskId)
+        binding.taskLT.header.apply {
+            ellipsize = null
+            isSingleLine = false
+            text = task.header
+        }
+
+        binding.taskLT.description.apply {
+            ellipsize = null
+            maxLines = 20
+            text = task.description
+        }
+
+        binding.changeTaskButton.setOnClickListener {
+            val bundle = bundleOf("id" to taskId)
 
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
@@ -55,11 +53,11 @@ class TaskDetailFragment : Fragment() {
                 .commit()
         }
 
-        deleteTaskButton.setOnClickListener {
-            dataBaseHandler.deleteTask(task)
+        binding.deleteTaskButton.setOnClickListener {
+            dataBaseHandler.deleteTask(taskId)
             parentFragmentManager.popBackStack()
         }
 
-        backImageButton.setOnClickListener { parentFragmentManager.popBackStack() }
+        binding.backImageButton.setOnClickListener { parentFragmentManager.popBackStack() }
     }
 }

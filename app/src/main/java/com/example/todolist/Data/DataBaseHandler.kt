@@ -52,18 +52,18 @@ class DataBaseHandler(context: Context) :
     @SuppressLint("Recycle")
     fun getAllTasks(): ArrayList<Task> {
         val db = this.readableDatabase
-        val tasks = java.util.ArrayList<Task>()
+        val tasks = ArrayList<Task>()
         val selectAllTasks = "Select * from $TABLE_NAME"
 
         val cursor = db.rawQuery(selectAllTasks, null)
 
         if (cursor.moveToFirst()) {
             do {
-                val task = Task()
-                task.id = cursor.getString(0).toInt()
-                task.header = cursor.getString(1)
-                task.description = cursor.getString(2)
-
+                val task = Task(
+                    cursor.getString(0).toInt(),
+                    cursor.getString(1),
+                    cursor.getString(2)
+                )
                 tasks.add(task)
             } while (cursor.moveToNext())
         }
@@ -82,10 +82,10 @@ class DataBaseHandler(context: Context) :
         )
     }
 
-    fun deleteTask(task: Task) {
+    fun deleteTask(id: Int) {
         val db = this.writableDatabase
 
-        db.delete(TABLE_NAME, "$KEY_ID=?", arrayOf(task.id.toString()))
+        db.delete(TABLE_NAME, "$KEY_ID=?", arrayOf(id.toString()))
         db.close()
     }
 

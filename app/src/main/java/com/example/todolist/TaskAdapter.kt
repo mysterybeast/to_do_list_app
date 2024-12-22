@@ -13,7 +13,7 @@ class TaskAdapter(
 ) : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater: LayoutInflater = LayoutInflater.from(parent.context)
+        val inflater = LayoutInflater.from(parent.context)
         val binding = TaskLayoutBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }

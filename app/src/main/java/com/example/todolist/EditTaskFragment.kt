@@ -31,7 +31,6 @@ class EditTaskFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         header = binding.editTaskLT.header
         description = binding.editTaskLT.description
-        val backImageButton = binding.backImageButton
         val dataBaseHandler = DataBaseHandler(requireActivity())
         val taskId = arguments?.getInt("id") ?: 0
 
@@ -41,7 +40,7 @@ class EditTaskFragment : Fragment() {
             description!!.setText(task!!.description)
         }
 
-        backImageButton.setOnClickListener {
+        binding.backImageButton.setOnClickListener {
             if (taskId > 0 && isFieldsChanged() && isFieldsNotEmpty()) {
                 task = Task(
                     taskId, header!!.text.toString(),

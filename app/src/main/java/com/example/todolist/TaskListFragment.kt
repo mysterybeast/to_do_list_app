@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.todolist.Data.DataBaseHandler
 import com.example.todolist.Model.Task
@@ -24,14 +26,13 @@ class TaskListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val taskList = binding.taskListLayout.taskList
-        val createTaskButton = binding.createTaskButton
 
         setIntialData()
+        val taskList = binding.taskListLayout.taskList
+        val taskAdapter = TaskAdapter(tasks, onTaskClick = { task: Task -> openTask(task.id) })
+        taskList.adapter = taskAdapter
 
-        val taskAdapter = TaskAdapter(tasks, onTaskClick = { task: Task -> openTask(task) })
-
-        createTaskButton.setOnClickListener {
+        binding.createTaskButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(
                     R.anim.slide_in, R.anim.fade_out,
@@ -42,20 +43,17 @@ class TaskListFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
-
-        taskList.adapter = taskAdapter
     }
 
     private fun setIntialData() {
         val dataBaseHandler = DataBaseHandler(requireActivity())
         tasks = dataBaseHandler.getAllTasks()
-        binding.emptyListLayout.visibility = if (tasks.isEmpty()) View.VISIBLE else View.GONE
+        binding.emptyListLayout.isVisible = tasks.isEmpty()
     }
 
-    private fun openTask(task: Task) {
-        val idToPut = task.id
-        val bundle = Bundle()
-        bundle.putInt("id", idToPut)
+    private fun openTask(taskId: Int) {
+        val bundle = bundleOf("id" to taskId)
+
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.slide_in, R.anim.fade_out,
