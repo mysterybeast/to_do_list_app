@@ -60,9 +60,9 @@ class DataBaseHandler(context: Context) :
         if (cursor.moveToFirst()) {
             do {
                 val task = Task(
-                    cursor.getString(0).toInt(),
-                    cursor.getString(1),
-                    cursor.getString(2)
+                    id = cursor.getString(0).toInt(),
+                    header = cursor.getString(1),
+                    description = cursor.getString(2)
                 )
                 tasks.add(task)
             } while (cursor.moveToNext())

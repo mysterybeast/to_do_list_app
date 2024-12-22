@@ -43,14 +43,16 @@ class EditTaskFragment : Fragment() {
         binding.backImageButton.setOnClickListener {
             if (taskId > 0 && isFieldsChanged() && isFieldsNotEmpty()) {
                 task = Task(
-                    taskId, header!!.text.toString(),
-                    description!!.text.toString()
+                    id = taskId,
+                    header = header!!.text.toString(),
+                    description = description!!.text.toString()
                 )
                 dataBaseHandler.updateTask(task!!)
             } else if (taskId == 0 && isFieldsNotEmpty()) {
                 task = Task(
-                    header!!.text.toString(),
-                    description!!.text.toString()
+                    id = 0,
+                    header = header!!.text.toString(),
+                    description = description!!.text.toString()
                 )
                 dataBaseHandler.addTask(task!!)
             }
