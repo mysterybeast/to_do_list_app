@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+   // kotlin("kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -43,10 +45,11 @@ android {
 }
 
 dependencies {
+    val fragment_version = "1.8.5"
+    val lifecycle_version = "2.8.6"
+    val room_version = "2.6.1"
 
     implementation(libs.core.ktx)
-    val fragment_version = "1.8.5"
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -57,5 +60,12 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("androidx.fragment:fragment:$fragment_version")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+    implementation("androidx.room:room-runtime:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+
+
+
 }
 

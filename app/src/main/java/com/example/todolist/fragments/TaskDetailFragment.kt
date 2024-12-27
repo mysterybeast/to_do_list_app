@@ -1,4 +1,4 @@
-package com.example.todolist
+package com.example.todolist.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import com.example.todolist.Data.DataBaseHandler
+import androidx.lifecycle.ViewModelProvider
+import com.example.todolist.R
+import com.example.todolist.viewmodel.TaskListViewModel
+import com.example.todolist.model.Task
 import com.example.todolist.databinding.FragmentTaskDetailBinding
 
 
 class TaskDetailFragment : Fragment() {
+    private var task: Task? = null
 
     private var _binding: FragmentTaskDetailBinding? = null
     private val binding get() = _binding!!
@@ -23,20 +27,22 @@ class TaskDetailFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val dataBaseHandler = DataBaseHandler(requireActivity())
+
+        val taskListViewModel = ViewModelProvider(this)[TaskListViewModel::class.java]
         val taskId = requireArguments().getInt("id")
-        val task = dataBaseHandler.getTask(taskId)
+
+        task = taskListViewModel.getTask(taskId)
 
         binding.taskLT.header.apply {
             ellipsize = null
             isSingleLine = false
-            text = task.header
+            text = task!!.header
         }
 
         binding.taskLT.description.apply {
             ellipsize = null
             maxLines = 20
-            text = task.description
+            text = task!!.description
         }
 
         binding.changeTaskButton.setOnClickListener {
@@ -54,7 +60,7 @@ class TaskDetailFragment : Fragment() {
         }
 
         binding.deleteTaskButton.setOnClickListener {
-            dataBaseHandler.deleteTask(taskId)
+            taskListViewModel.deleteTask(task!!)
             parentFragmentManager.popBackStack()
         }
 

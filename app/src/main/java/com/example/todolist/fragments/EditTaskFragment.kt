@@ -1,17 +1,20 @@
-package com.example.todolist
+package com.example.todolist.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageButton
 import androidx.fragment.app.Fragment
-import com.example.todolist.Data.DataBaseHandler
-import com.example.todolist.Model.Task
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.example.todolist.viewmodel.TaskListViewModel
+import com.example.todolist.model.Task
 import com.example.todolist.databinding.FragmentEditTaskBinding
 
+
 class EditTaskFragment : Fragment() {
+
 
     private var _binding: FragmentEditTaskBinding? = null
     private val binding get() = _binding!!
@@ -29,13 +32,15 @@ class EditTaskFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        val taskListViewModel = ViewModelProvider(this)[TaskListViewModel::class.java]
+
         header = binding.editTaskLT.header
         description = binding.editTaskLT.description
-        val dataBaseHandler = DataBaseHandler(requireActivity())
         val taskId = arguments?.getInt("id") ?: 0
 
         if (taskId > 0) {
-            task = dataBaseHandler.getTask(taskId)
+            task = taskListViewModel.getTask(taskId)
             header!!.setText(task!!.header)
             description!!.setText(task!!.description)
         }
@@ -47,14 +52,14 @@ class EditTaskFragment : Fragment() {
                     header = header!!.text.toString(),
                     description = description!!.text.toString()
                 )
-                dataBaseHandler.updateTask(task!!)
+                taskListViewModel.updateTask(task!!)
             } else if (taskId == 0 && isFieldsNotEmpty()) {
                 task = Task(
                     id = 0,
                     header = header!!.text.toString(),
                     description = description!!.text.toString()
                 )
-                dataBaseHandler.addTask(task!!)
+                taskListViewModel.addTask(task!!)
             }
             parentFragmentManager.popBackStack()
         }
