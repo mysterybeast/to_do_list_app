@@ -6,15 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.todolist.R
-import com.example.todolist.viewmodel.TaskListViewModel
-import com.example.todolist.model.Task
+import com.example.todolist.data.AppDatabase
 import com.example.todolist.databinding.FragmentTaskDetailBinding
+import com.example.todolist.repository.TaskRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class TaskDetailFragment : Fragment() {
-    private var task: Task? = null
 
     private var _binding: FragmentTaskDetailBinding? = null
     private val binding get() = _binding!!
@@ -28,21 +31,26 @@ class TaskDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val taskListViewModel = ViewModelProvider(this)[TaskListViewModel::class.java]
+        val taskDao = AppDatabase.getDataBase(requireContext()).taskDao()
+        val repository = TaskRepository(taskDao)
         val taskId = requireArguments().getInt("id")
 
-        task = taskListViewModel.getTask(taskId)
+        val task = runBlocking {
+            lifecycleScope.async(Dispatchers.IO) {
+                return@async repository.getTask(taskId)
+            }.await()
+        }
 
         binding.taskLT.header.apply {
             ellipsize = null
             isSingleLine = false
-            text = task!!.header
+            text = task.header
         }
 
         binding.taskLT.description.apply {
             ellipsize = null
             maxLines = 20
-            text = task!!.description
+            text = task.description
         }
 
         binding.changeTaskButton.setOnClickListener {
@@ -60,7 +68,7 @@ class TaskDetailFragment : Fragment() {
         }
 
         binding.deleteTaskButton.setOnClickListener {
-            taskListViewModel.deleteTask(task!!)
+            lifecycleScope.launch { repository.deleteTask(task) }
             parentFragmentManager.popBackStack()
         }
 

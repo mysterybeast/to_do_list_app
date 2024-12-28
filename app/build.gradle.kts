@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-   // kotlin("kapt")
     id("com.google.devtools.ksp")
 }
 
@@ -45,6 +44,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.ui.desktop)
     val fragment_version = "1.8.5"
     val lifecycle_version = "2.8.6"
     val room_version = "2.6.1"
@@ -64,8 +64,5 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
-
-
-
 }
 

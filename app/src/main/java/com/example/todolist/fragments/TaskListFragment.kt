@@ -7,18 +7,22 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.todolist.R
 import com.example.todolist.TaskAdapter
-import com.example.todolist.viewmodel.TaskListViewModel
+import com.example.todolist.data.AppDatabase
 import com.example.todolist.model.Task
 import com.example.todolist.databinding.FragmentTaskListBinding
+import com.example.todolist.repository.TaskRepository
 
 
 class TaskListFragment : Fragment() {
 
     private var _binding: FragmentTaskListBinding? = null
     private val binding get() = _binding!!
+
+    private var tasks: LiveData<List<Task>> = MutableLiveData()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -29,12 +33,11 @@ class TaskListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val taskListViewModel = ViewModelProvider(this)[TaskListViewModel::class.java]
-
+        setIntialData()
         val taskList = binding.taskListLayout.taskList
         val taskAdapter = TaskAdapter(onTaskClick = { task: Task -> openTask(task.id) })
 
-        taskListViewModel.getAllTasks.observe(viewLifecycleOwner) { task ->
+        tasks.observe(viewLifecycleOwner) { task ->
             taskAdapter.setTasks(task)
             binding.emptyListLayout.isVisible = task.isEmpty()
         }
@@ -51,6 +54,12 @@ class TaskListFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+    }
+
+    private fun setIntialData() {
+        val taskDao = AppDatabase.getDataBase(requireContext()).taskDao()
+        val repository = TaskRepository(taskDao)
+        tasks = repository.getAllTasks
     }
 
     private fun openTask(taskId: Int) {

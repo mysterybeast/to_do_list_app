@@ -9,8 +9,8 @@ class TaskRepository(private val taskDao: TaskDao) {
 
     val getAllTasks: LiveData<List<Task>> = taskDao.getAllTasks()
 
-    suspend fun addTask(task: Task) = taskDao.addTask(task)
     suspend fun getTask(id: Int) = taskDao.getTask(id)
-    suspend fun updateTask(task: Task) = taskDao.updateTask(task)
     suspend fun deleteTask(task: Task) = taskDao.deleteTask(task)
+    suspend fun saveTask(task: Task) = taskDao.saveTask(task)
+
 }
