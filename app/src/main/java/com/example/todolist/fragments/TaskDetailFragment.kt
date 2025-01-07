@@ -1,4 +1,4 @@
-package com.example.todolist
+package com.example.todolist.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,8 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import com.example.todolist.Data.DataBaseHandler
+import androidx.lifecycle.lifecycleScope
+import com.example.todolist.R
+import com.example.todolist.data.AppDatabase
 import com.example.todolist.databinding.FragmentTaskDetailBinding
+import com.example.todolist.repository.TaskRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class TaskDetailFragment : Fragment() {
@@ -23,9 +30,16 @@ class TaskDetailFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val dataBaseHandler = DataBaseHandler(requireActivity())
+
+        val taskDao = AppDatabase.getDataBase(requireContext()).taskDao()
+        val repository = TaskRepository(taskDao)
         val taskId = requireArguments().getInt("id")
-        val task = dataBaseHandler.getTask(taskId)
+
+        val task = runBlocking {
+            lifecycleScope.async(Dispatchers.IO) {
+                return@async repository.getTask(taskId)
+            }.await()
+        }
 
         binding.taskLT.header.apply {
             ellipsize = null
@@ -54,7 +68,7 @@ class TaskDetailFragment : Fragment() {
         }
 
         binding.deleteTaskButton.setOnClickListener {
-            dataBaseHandler.deleteTask(taskId)
+            lifecycleScope.launch { repository.deleteTask(task) }
             parentFragmentManager.popBackStack()
         }
 

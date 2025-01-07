@@ -1,16 +1,18 @@
 package com.example.todolist
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.todolist.Model.Task
+import com.example.todolist.model.Task
 import com.example.todolist.databinding.TaskLayoutBinding
 
 
 class TaskAdapter(
-    private val tasks: List<Task>,
     val onTaskClick: (task: Task) -> Unit
 ) : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
+
+    private var tasks = emptyList<Task>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -38,5 +40,11 @@ class TaskAdapter(
                 item?.let { onTaskClick(it) }
             }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setTasks(tasks: List<Task>){
+        this.tasks = tasks
+        notifyDataSetChanged()
     }
 }

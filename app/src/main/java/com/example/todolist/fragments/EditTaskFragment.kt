@@ -1,15 +1,21 @@
-package com.example.todolist
+package com.example.todolist.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageButton
 import androidx.fragment.app.Fragment
-import com.example.todolist.Data.DataBaseHandler
-import com.example.todolist.Model.Task
+import androidx.lifecycle.lifecycleScope
+import com.example.todolist.data.AppDatabase
+import com.example.todolist.model.Task
 import com.example.todolist.databinding.FragmentEditTaskBinding
+import com.example.todolist.repository.TaskRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+
 
 class EditTaskFragment : Fragment() {
 
@@ -20,41 +26,39 @@ class EditTaskFragment : Fragment() {
     private var task: Task? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEditTaskBinding.inflate(inflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        val taskDao = AppDatabase.getDataBase(requireContext()).taskDao()
+        val repository = TaskRepository(taskDao)
+
         header = binding.editTaskLT.header
         description = binding.editTaskLT.description
-        val dataBaseHandler = DataBaseHandler(requireActivity())
         val taskId = arguments?.getInt("id") ?: 0
 
         if (taskId > 0) {
-            task = dataBaseHandler.getTask(taskId)
+            task = runBlocking {
+                lifecycleScope.async(Dispatchers.IO) {
+                    return@async repository.getTask(taskId)
+                }.await()
+            }
             header!!.setText(task!!.header)
             description!!.setText(task!!.description)
         }
 
         binding.backImageButton.setOnClickListener {
-            if (taskId > 0 && isFieldsChanged() && isFieldsNotEmpty()) {
+            if (isFieldsNotEmpty()) {
                 task = Task(
                     id = taskId,
                     header = header!!.text.toString(),
                     description = description!!.text.toString()
                 )
-                dataBaseHandler.updateTask(task!!)
-            } else if (taskId == 0 && isFieldsNotEmpty()) {
-                task = Task(
-                    id = 0,
-                    header = header!!.text.toString(),
-                    description = description!!.text.toString()
-                )
-                dataBaseHandler.addTask(task!!)
+                lifecycleScope.launch { repository.saveTask(task!!) }
             }
             parentFragmentManager.popBackStack()
         }
@@ -63,10 +67,5 @@ class EditTaskFragment : Fragment() {
     private fun isFieldsNotEmpty(): Boolean {
         return (header!!.text.toString().isNotBlank() and
                 description!!.text.toString().isNotBlank())
-    }
-
-    private fun isFieldsChanged(): Boolean {
-        return (header!!.text.toString() != task!!.header) or
-                (description!!.text.toString() != task!!.description)
     }
 }
