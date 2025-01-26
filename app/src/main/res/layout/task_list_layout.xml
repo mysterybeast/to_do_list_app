@@ -7,5 +7,6 @@
     android:layout_marginTop="20dp"
     android:layout_marginEnd="10dp"
     android:paddingBottom="50dp"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    android:layoutAnimation="@anim/layout_animation_recycler_view"/>
 
