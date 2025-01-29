@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.todolist.App
 import com.example.todolist.R
-import com.example.todolist.data.AppDatabase
 import com.example.todolist.databinding.FragmentTaskDetailBinding
 import com.example.todolist.repository.TaskRepository
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +31,7 @@ class TaskDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val taskDao = AppDatabase.getDataBase(requireContext()).taskDao()
+        val taskDao = App.instance.db.taskDao()
         val repository = TaskRepository(taskDao)
         val taskId = requireArguments().getInt("id")
 

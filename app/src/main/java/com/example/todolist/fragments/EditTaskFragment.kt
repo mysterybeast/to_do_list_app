@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.todolist.data.AppDatabase
+import com.example.todolist.App
 import com.example.todolist.model.Task
 import com.example.todolist.databinding.FragmentEditTaskBinding
 import com.example.todolist.repository.TaskRepository
@@ -33,8 +33,7 @@ class EditTaskFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        val taskDao = AppDatabase.getDataBase(requireContext()).taskDao()
+        val taskDao = App.instance.db.taskDao()
         val repository = TaskRepository(taskDao)
 
         header = binding.editTaskLT.header
